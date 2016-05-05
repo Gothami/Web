@@ -11,6 +11,7 @@
 #include <errno.h>
 #include <fcntl.h>
 
+
 #define LENGTH 512
 
 int main(){
@@ -59,15 +60,19 @@ int main(){
         char sdbuf[LENGTH];
         char *type;
         char *extension;
+        char* phpCommand = "php -f ";
+        FILE* f;
+        char readbuf[80];
         if(strcmp(token,"/")==0)
         {
-            strcpy(fullpath, "/home/gothami/Desktop//WebServer/Files");
+            strcpy(fullpath, "/home/gothami/Desktop/WebServer/Files");
             strcat(fullpath, "/index.html");
             type = "text/html";
             //printf("%s\n",fullpath);
         }
         else{
             strcpy(fullpath, "/home/gothami/Desktop/WebServer/Files");
+            char* filename = token;
             strcat(fullpath, token);
             printf("%s\n",fullpath);
             extension = strsep(&token, ".");
@@ -97,6 +102,20 @@ int main(){
             else if(strcmp(token, "php"))
             {
                 //type = "text/te";
+                strcat(phpCommand, filename);
+
+                if((f = popen(phpCommand, "r"))!= NULL){
+                    while(fgets(readbuf, 80, pipein_fp)){
+                        fputs(readbuf, pipeout_fp);
+                        int lenght = strlen(readbuf);
+                        write(newSocket, readbuf, lenght);
+                        return 0;
+                        }
+                }
+
+
+
+
             }
         }
 
